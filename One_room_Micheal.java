@@ -19,7 +19,7 @@ public class One_Room_Micheal {
     static Scanner pdecision = new Scanner(System.in); //this will identify the player's decision
     static String choice; //this string will be used to document the choice the player made
     static Random rand = new Random();//this will generate random ints that will determine what room you are in
-    static int room;
+    static int room;// this willbe the int that corresponds to the room that you are in
     static boolean gameplay = true; //  If true, loop continues, if false, game ends. 
                
     /**
@@ -28,7 +28,7 @@ public class One_Room_Micheal {
     public static void main(String[] args) {
         // TODO code application logic here
         room = rand.nextInt(3);//randomly selects a # from 0-2. Each will correspond to a room.
-        intro();
+        intro();//call a method that introduces the storyline
         
         while(gameplay) { // this while loop will be responsible for ending or continuing the game
             System.out.println("Here are some hints...");
@@ -82,7 +82,9 @@ public class One_Room_Micheal {
             System.out.println("You win!\n");
             gameplay = false;
         } else {
-            System.out.println("NOPE. PLEASE TRY AGAIN!");
+            System.out.println("NOPE. Do you want to try again(t) or quit(q).");
+            choice = pdecision.nextLine();
+            if(choice.contains("q")|| choice.contains("Q"));
         } 
     }
     
@@ -101,7 +103,7 @@ public class One_Room_Micheal {
             System.out.println("You win!\n");
             gameplay = false;
         } else {
-            System.out.println("NOPE. PLEASE TRY AGAIN!");
+            System.out.println("NOPE. Do you want to try again(t) or quit(q).");
         }
     }
     
@@ -121,7 +123,7 @@ public class One_Room_Micheal {
             System.out.println("You win!\n");
             gameplay = false;
         } else {
-            System.out.println("NOPE. PLEASE TRY AGAIN!");
+            System.out.println("NOPE. Do you want to try again(t) or quit(q).");
         }
     }
 }
