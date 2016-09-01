@@ -1,0 +1,109 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package research_micheal_luong;
+    import java.util.*;
+/**
+ *
+ * @author micheal
+ */
+public class Research_Micheal_Luong {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+         Scanner input = new Scanner(System.in);
+         Random randNum = new Random();
+         //final int arrLength = 1000;
+         final int arrLength = 1000;
+         boolean looping = true;
+         int inputNum;
+         String answer;
+         int[] array = new int[arrLength];
+         boolean found;
+         int foundNum = 2000000000;
+         
+         for (int i = 0; i < array.length; i++) {
+             array[i] = randNum.nextInt(1000) + 1;
+         }
+         
+         Arrays.sort(array);
+                 
+         do{
+             System.out.print("Please enter the number you wish to look for: ");
+             System.out.println("");
+             
+             found = false;
+             inputNum = input.nextInt();
+                    
+             System.out.println("Linear Search algorithm:");
+             System.out.println("");
+             
+             /* Your linear search goes here */
+             
+             for(int j = 0; j < arrLength; j++) {
+                 array[j] = j - 1;//since position starts at zero
+                 if(j == inputNum) {
+                     found = true;
+                     foundNum = j;
+                 } 
+             }
+ 
+             
+             if (found) {
+                  System.out.println("The number " + inputNum 
+                                     + " can be found at " + foundNum);
+             } else {
+                 System.out.println("Sorry, " + " could not be found.");
+             }
+             
+             System.out.println("Binary Search algorithm:");
+             System.out.println("");
+             
+             found = false;
+             
+             /* Your binary search goes here */
+             
+             int start = 0;
+             int end = array.length - 1;
+             do{
+                 
+                int med = (end + start) / 2; 
+                
+                if(inputNum == array[med]) {
+                    found = true;
+                    foundNum = med;
+                } 
+                
+                if(inputNum < array[med]) {//less than the array 
+                    //lower half
+                    end = med - 1;
+                } else {
+                    //upper half
+                    start = med + 1;
+                }
+             }while(start <= end);
+             
+             if (found) {
+                 System.out.println("The number " + inputNum 
+                                     + " can be found at " + foundNum);
+             } else {
+                 System.out.println("Sorry, " + " could not be found.");
+             }
+             
+             System.out.println("Would you like to continue?");
+             Scanner replay = new Scanner(System.in);
+             answer = replay.next();
+             
+             System.out.println("");
+             
+             if(answer.equals("no")) {
+                 looping = false;
+             }
+         }while(looping);
+     }
+ }
