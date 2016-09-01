@@ -51,7 +51,7 @@ public class Research_Micheal {
                  
                  if(j == inputNum) {
                      found = true;
-                     foundNum
+                     foundNum = j;
                  } 
              }
  
@@ -69,6 +69,22 @@ public class Research_Micheal {
              found = false;
              
              /* Your binary search goes here */
+             boolean lowerhalf = false;
+             int low = 0;
+             int high = array.length - 1;
+             int d = array.length;
+             do{
+                 d = d / 2;
+                 
+                if(inputNum < d) {
+                    //lower half
+                    lowerhalf = true;
+                    low++;//
+                } else if(inputNum > d) {
+                    //upper half
+                    lowerhalf = false;
+                }
+             }while(d != inputNum);
              
              if (found) {
                  System.out.println("The number " + inputNum 
