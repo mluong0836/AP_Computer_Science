@@ -1,0 +1,119 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package research_micheal_luong;
+    import java.util.*;
+/**
+ *
+ * @author micheal
+ */
+/*************************************************************************************************************
+ * File Name: Research_Micheal_Luong.java
+ * Author: Luong, Micheal
+ * Date: 8/31/16
+ * Description: This program asks the player what number they want from the a list of randomized numbers.
+ *              The program will then try to find what position the number selected was in the array through
+ *              both linear and binary array searches. Then, the number selected and its position is revealed.
+ * Input: keyboard
+ * Output: Console
+ *************************************************************************************************************/
+public class Research_Micheal_Luong {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+         Scanner input = new Scanner(System.in);
+         Random randNum = new Random();
+         final int arrLength = 1000;
+         boolean looping = true;
+         int inputNum;
+         String answer;
+         int[] array = new int[arrLength];
+         boolean found;
+         int foundNum = 2000000000;
+         
+         for (int i = 0; i < array.length; i++) {
+             array[i] = randNum.nextInt(1000) + 1;//randomizing it!
+         }
+         
+         Arrays.sort(array);
+                 
+         do{
+             System.out.print("Please enter the number you wish to look for: ");
+             System.out.println("");
+             
+             found = false;
+             inputNum = input.nextInt();
+                    
+             System.out.println("Linear Search algorithm:");
+             System.out.println("");
+             
+             /* Your linear search goes here */
+             
+             /* for loop that will iterate through the array to find the number and position similar to inputNum */
+             for(int j = 0; j < array.length; j++) {
+                
+                 if(inputNum == array[j]) { //compares the wanted number to the array number located in that position
+                     found = true;//boolean found is set to true, so that the next if statement can proceed
+                     foundNum = j;//you set the foundNum position to int j, the index/position
+                 } 
+             }
+ 
+             if (found) {
+                  System.out.println("The number " + inputNum 
+                                     + " can be found at " + foundNum);
+             } else {
+                 System.out.println("Sorry, " + " could not be found.");
+             }
+             
+             System.out.println("Binary Search algorithm:");
+             System.out.println("");
+             
+             found = false;
+             
+             /* Your binary search goes here */
+             
+             int start = 0; //this is the lowest position on the array
+             int end = array.length - 1; //this is the highest position on the array, subtract one, since it starts at zero
+              
+             do{
+                 
+                int med = (end + start) / 2; //dividing the array into half
+                
+                if(inputNum == array[med]) {//if the number is equal to the number in that position of the array
+                    found = true;//boolean found becomes true, which later allows the program to tell the player where the position of that number was
+                    foundNum = med;//position is recorded
+                } 
+                
+                if(inputNum < array[med]) {//the correct answer is in a lower position
+                    //lower half
+                    end = med - 1;//subtract one from the highest position to look at the lower half
+                } else {
+                    //upper half
+                    start = med + 1;//add one from the lowest position to look at the upper half
+                }
+             }while(start <= end);//continue this loop until the lowest position value(start) is less than or equal to the end position
+             
+             if (found) {
+                 System.out.println("The number " + inputNum 
+                                     + " can be found at " + foundNum);
+             } else {
+                 System.out.println("Sorry, " + " could not be found.");
+             }
+             
+             System.out.println("Would you like to continue?");
+             Scanner replay = new Scanner(System.in);
+             answer = replay.next();
+             
+             System.out.println("");
+             
+             if(answer.equals("no")) {
+                 looping = false;
+             }
+         }while(looping);
+     }
+ }
