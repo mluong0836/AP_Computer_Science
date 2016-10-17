@@ -1,0 +1,197 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/********************************************************************************
+ * Program Filename: Inventory_Micheal_Luong.java
+ * Author: Luong, Micheal
+ * Date: 10/13/16
+ * Description: This is the main class
+ * Input: Keyboard, RngDrops
+ * Output: Console
+ ********************************************************************************/
+
+package inventory_micheal_luong;
+
+    import java.util.ArrayList;
+    import java.util.Iterator;
+    import java.util.Random;
+    import java.util.Scanner;
+/**
+ *
+ * @author micheal
+ */
+public class Inventory_Micheal_Luong {
+
+    static Random rand = new Random();//for randomizing the drops every turn
+    static int dropsnum;//integer that will hold the index of the arraylist drops
+    static String response;//player response
+    static Scanner scan = new Scanner(System.in);//scanner to read player's responses
+    public static RngDrops r = new RngDrops("", 0, false, "");
+    static int weights = 0;
+    static String lastitem;
+    /**
+     * @param args the command line arguments
+     */
+    
+    public static void main(String[] args) {
+        ArrayList<RngDrops> drops = new ArrayList<RngDrops>();//arraylist for dropped items
+        ArrayList<RngDrops> inventory = new ArrayList<RngDrops>();//arraylist to check inventory
+        
+        RngDrops item1 = new RngDrops("a sword", 10, false, "slays a dragon"); // Creating a new object
+        drops.add(item1); // Adding it to the list
+        
+        RngDrops item2 = new RngDrops("a bat", 7, false, "hits goblin");
+        drops.add(item2);
+        
+        RngDrops item3 = new RngDrops("a tomatoe", 3, false, "eats tomatoe");
+        drops.add(item3);
+        
+        RngDrops item4 = new RngDrops("an orb", 13, false, "casts spell");
+        drops.add(item4);
+        
+        RngDrops item5 = new RngDrops("a shoe", 7, false, "changes shoes");
+        drops.add(item5);
+        
+        RngDrops item6 = new RngDrops("a taco", 3, true, "ate a raw taco! UGH!");
+        drops.add(item6);
+        
+        RngDrops item7 = new RngDrops("a cookie", 4, true, "ate a cookie. OH NO, IT'S POISON!!!");
+        drops.add(item7);
+        
+        RngDrops item8 = new RngDrops("a metal ball ", 10, false, "lunged the metal ball at a bird");
+        drops.add(item8);
+        
+        RngDrops item9 = new RngDrops("a watermellon", 8, true, "ate a watermellon with rat poison");
+        drops.add(item9);
+        
+        RngDrops itemfinal = new RngDrops("an axe", 12, false, "cleared some trees.");
+        drops.add(itemfinal);
+        
+        introstory();//introduction to the game
+        
+        Iterator droppedIterator = drops.iterator();
+        
+        boolean gameloop = true;//boolean to start game loop
+        int counter = 0;//index of inventory arrraylist
+        
+        while(gameloop) {//while loop that will determine when to start/end the game.
+            dropsnum = rand.nextInt(10);//prepares for a drop 
+            System.out.println("Look there's " + drops.get(dropsnum).getName() + " on the ground.");
+            System.out.println("Do you want to pick it up?");
+            response = scan.nextLine();//records player's input
+            
+            /*if player types yes, the item is added to the bag, if not, then player passes the object*/
+            if(response.equalsIgnoreCase("yes")) {
+//                RngDrops.weight = drops.get(dropsnum).getWeight() + r.getWeight();
+               //System.out.println(drops.get(dropsnum).getWeight());
+                weights = drops.get(dropsnum).getWeight() + weights;
+                r.setWeight(weights);
+                System.out.println(r.getWeight());
+                System.out.println("Player picks up " + drops.get(dropsnum).getName() + " and puts it in the bag.");
+                inventory.add(drops.get(dropsnum));
+                counter++;
+                //System.out.println(inventory.get(0).getName());
+            } else {
+                System.out.println("Player passes  " + drops.get(dropsnum).getName());
+            } 
+            
+            if(r.getWeight() < 50) {
+                System.out.print("Do you want to CHECK your bag, DROP " + drops.get(dropsnum).getName());
+                System.out.println(", USE " + drops.get(dropsnum).getName() + ", or DIE.");
+                response = scan.nextLine();
+                if(response.equalsIgnoreCase("check")) {//opens inventory bag
+                    System.out.println("Player is opening bag...\n");
+                    System.out.println("You have: ");
+                    Iterator inventoryIterator = inventory.iterator();//placement matters
+                    while (inventoryIterator.hasNext()) {
+                        r = (RngDrops)inventoryIterator.next();
+                        System.out.println(r.getName());
+                    }
+                    System.out.println("Player zips up the bag and continues...");
+                } else if(response.equalsIgnoreCase("drop")) {//drops all occurences of the item
+                    Iterator <RngDrops>  inventoryIterator = inventory.iterator();//placement matters
+                    while(inventoryIterator.hasNext()) {
+                        
+                        if(inventory.isEmpty()) {//empty list
+                            System.out.println("The bag is empty");
+                        } else {//drops.get(dropsnum).getName())
+                            if(inventoryIterator.next().getName().equals(inventory.get(inventory.size() - 1).getName())) {//does not mean that you collected it
+                                counter--;
+                                if(counter < 0) {
+                                    counter = 0;
+                                }
+                                System.out.println(counter);
+                                weights = weights - inventory.get(counter).getWeight();
+                                System.out.println("You now have " + weights);
+                                System.out.println("deleted");
+                                inventoryIterator.remove();//removing the item at the end will allow it to subtract the weights first   
+                            }
+                        }
+                        
+//                        if (inventoryIterator.next().getName().equals(drops.get(dropsnum).getName())) {
+//                            counter--;
+//                            if(counter < 0) {
+//                                counter = 0;//first element taken away
+//                            }
+//                            System.out.println(counter);
+//                            if(inventory.isEmpty()) {
+//                                System.out.println("The bag is empty");
+//                            } else {
+//                                weights = weights - inventory.get(counter).getWeight();
+//                                System.out.println("You now have " + weights);
+//                                System.out.println("deleted");
+//                            }
+//                            
+//                            inventoryIterator.remove();//removing the item at the end will allow it to subtract the weights first       
+//                        }
+                    }
+                } else if(response.equalsIgnoreCase("use")) {
+                    Iterator <RngDrops>  inventoryIterator = inventory.iterator();//placement matters
+                    while(inventoryIterator.hasNext()) {
+                        inventoryIterator.next();
+                    }
+
+                    counter--;
+                    
+                    if(counter < 0) {
+                        counter = 0;//first element taken away
+                    }
+                    
+                    if(inventory.isEmpty()) {
+                        System.out.println("The bag is empty");
+                    } else {
+                        System.out.println("Player " + inventory.get(counter).getAction());
+                        weights = weights - inventory.get(counter).getWeight();
+                        System.out.println("You now have " + weights);
+                        System.out.println("deleted");
+                        inventoryIterator.remove();
+                    }
+                    
+                } else if(response.equalsIgnoreCase("die")) {
+                    gameloop = false;
+                }
+            } else {
+                System.out.println("YOU LOSE!");
+                gameloop = false;
+            }
+        }
+        
+        System.out.println("Thanks for playing.");
+    }
+    
+    static void introstory() {
+        
+        System.out.println("You find yourself in a deep jungle with a straight long path.");
+        System.out.println("The only way to get out of here is to follow this path and collect");
+        System.out.println("items that will help you along this dangerous journey.\n");
+        System.out.println("But be careful, you don't want to hold too much weight either as well.");
+        System.out.println("HINT...HINT... ");
+        System.out.println("Don't go over 50 lbs.\n");
+        System.out.println("You look ready to begin your adventure, lets start...");
+        
+    }
+    
+}
