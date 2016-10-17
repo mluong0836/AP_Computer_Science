@@ -1,0 +1,131 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/********************************************************************************
+ * Program Filename: RngDrops.java
+ * Author: Luong, Micheal
+ * Date: 10/14/16
+ * Description: 
+ * Input: Keyboard
+ * Output: Inventory_Micheal_Luong.java
+ ********************************************************************************/
+
+package inventory_micheal_luong;
+
+/**
+ *
+ * @author micheal
+ */
+public class RngDrops extends Inventory_Micheal_Luong{
+    
+      String name;
+      int weight;
+      boolean kills;
+      String action;
+    
+    public RngDrops (String a, int b, boolean c, String d) {
+        name = a;
+        weight = b;
+        kills = c;
+        action = d;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    /****************************************************************************
+     * Method: The method name is intro
+     * Description: This method serves as the introductory paragraph in which the
+     *              system welcomes the player and asks if they want to search for
+     *              the location of a book in the "library", or if they want to 
+     *              find the name of the book based on their provided location, or
+     *              quit the game.
+     * Parameters: no parameters taken
+     * Pre-Conditions: The gameplay boolean must be set to true in order for the 
+     *                 while loop to continue running. Also, this method comes 
+     *                 after the system has already set a 2D array with titles.
+     * Post-Conditions: Depending on the player's choice, if the player chose 1, it
+     *                  will go to method opt1, if the player chooses 2, it goes to 
+     *                  opt2, and three to quit. This begins the searching.
+     ****************************************************************************/
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    /****************************************************************************
+     * Method: The method name is intro
+     * Description: This method serves as the introductory paragraph in which the
+     *              system welcomes the player and asks if they want to search for
+     *              the location of a book in the "library", or if they want to 
+     *              find the name of the book based on their provided location, or
+     *              quit the game.
+     * Parameters: no parameters taken
+     * Pre-Conditions: The gameplay boolean must be set to true in order for the 
+     *                 while loop to continue running. Also, this method comes 
+     *                 after the system has already set a 2D array with titles.
+     * Post-Conditions: Depending on the player's choice, if the player chose 1, it
+     *                  will go to method opt1, if the player chooses 2, it goes to 
+     *                  opt2, and three to quit. This begins the searching.
+     ****************************************************************************/
+    
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public boolean isKills() {
+        return kills;
+    }
+
+    /****************************************************************************
+     * Method: The method name is intro
+     * Description: This method serves as the introductory paragraph in which the
+     *              system welcomes the player and asks if they want to search for
+     *              the location of a book in the "library", or if they want to 
+     *              find the name of the book based on their provided location, or
+     *              quit the game.
+     * Parameters: no parameters taken
+     * Pre-Conditions: The gameplay boolean must be set to true in order for the 
+     *                 while loop to continue running. Also, this method comes 
+     *                 after the system has already set a 2D array with titles.
+     * Post-Conditions: Depending on the player's choice, if the player chose 1, it
+     *                  will go to method opt1, if the player chooses 2, it goes to 
+     *                  opt2, and three to quit. This begins the searching.
+     ****************************************************************************/
+    
+    public void setKills(boolean kills) {
+        this.kills = kills;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    /****************************************************************************
+     * Method: The method name is intro
+     * Description: This method serves as the introductory paragraph in which the
+     *              system welcomes the player and asks if they want to search for
+     *              the location of a book in the "library", or if they want to 
+     *              find the name of the book based on their provided location, or
+     *              quit the game.
+     * Parameters: no parameters taken
+     * Pre-Conditions: The gameplay boolean must be set to true in order for the 
+     *                 while loop to continue running. Also, this method comes 
+     *                 after the system has already set a 2D array with titles.
+     * Post-Conditions: Depending on the player's choice, if the player chose 1, it
+     *                  will go to method opt1, if the player chooses 2, it goes to 
+     *                  opt2, and three to quit. This begins the searching.
+     ****************************************************************************/
+    
+    public void setAction(String action) {
+        this.action = action;
+    }    
+}
