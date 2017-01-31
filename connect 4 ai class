@@ -1,0 +1,68 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package connect4_micheal_luong;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+/**
+ *
+ * @author dong
+ */
+public class Computer extends Grid {
+
+    private int pCol, pRow;
+    private boolean win = false;
+    private ArrayList<AiLocations> stored = new ArrayList();
+    Random rand = new Random();
+
+    public int getpRow() {
+        return pRow;
+    }
+
+    public void setpRow(int pRow) {
+        this.pRow = pRow;
+    }
+
+    public Computer() {
+
+    }
+
+    public void AiTurn() {//uses player's relative coorelation
+        int randomize;
+        stored.add(new AiLocations(pCol - 1));
+        stored.add(new AiLocations(pCol + 1));
+        stored.add(new AiLocations(pCol));
+        boolean loop = true;
+        while (loop) {
+            randomize = rand.nextInt(stored.size());
+            System.out.println(stored.get(randomize).getCol());
+            if (BorderCheck(stored.get(randomize).getCol())) {
+                UpdateBoard(2, stored.get(randomize).getCol());
+                loop = false;
+            } else {
+                stored.remove(randomize);
+            }
+        }
+        stored.removeAll(stored);
+    }
+
+    public int getpCol() {
+        return pCol;
+    }
+
+    public void setpCol(int pCol) {
+        this.pCol = pCol;
+    }
+
+    public boolean isWin() {
+        return win;
+    }
+
+    public void setWin(boolean win) {
+        this.win = win;
+    }
+}
