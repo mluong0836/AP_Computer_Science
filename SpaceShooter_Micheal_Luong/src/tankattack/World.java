@@ -1,0 +1,529 @@
+
+// This entire file is part of my masterpiece.
+// Ruslan Ardashev
+
+package tankattack;
+
+import Sprites.*;
+import java.util.*;
+import javafx.animation.*;
+import javafx.event.*;
+import javafx.geometry.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
+import javafx.scene.input.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
+import javafx.scene.text.*;
+import javafx.stage.*;
+import javafx.util.*;
+
+public abstract class World {
+    
+    public static World sharedInstance;
+    public static boolean isListeningForInput = true;
+    
+    private Scene scene;
+    private Group root;
+    private Random myGenerator = new Random();
+    private Timeline timeline;
+    private Player playerSprite;
+    
+    // Sprite-Related Instance Vars
+    private ArrayList<Sprite> sprites;
+    private ArrayList<Sprite> spritesToRemove;
+    private ArrayList<Bullet> bullets;
+    private ArrayList<Bullet> bulletsToRemove;
+    
+    // Setters, Getters
+    public void addSprite(Sprite s) {
+                
+        if (s instanceof Bullet) {
+            
+            if (bullets == null) {
+
+                bullets = new ArrayList();
+
+            }
+            
+            bullets.add((Bullet)s);
+            
+        }
+        
+        else {
+            
+            if (sprites == null) {
+
+                sprites = new ArrayList();
+
+            }
+            
+            sprites.add(s);
+            
+        }
+        
+        root.getChildren().add(s);
+        
+    }
+    
+    public void removeSprite(Sprite s) {
+                
+        if (sprites == null) {
+
+            return;
+
+        }
+
+        sprites.remove(s);
+        root.getChildren().remove(s);
+        
+    }
+        
+    public Player playerSprite() {
+        
+        return playerSprite;
+        
+    }
+    
+    public void setPlayerSprite(Player player) {
+        
+        playerSprite = player;
+        
+    }
+    
+    public Group group() {
+        
+        return this.root;
+        
+    }
+    
+    public void setGroup(Group root) {
+        
+        this.root = root;
+        
+    }
+    
+    public Scene scene() {
+        
+        return this.scene;
+        
+    }
+    
+    public void setScene(Scene scene) {
+        
+        this.scene = scene;
+        
+    }
+    
+    // Real Methods
+        // Constructors
+        // Create Scene, Then Init Animation. Rest of methods are helpers.
+    public World() {
+        
+        World.sharedInstance = this;
+        
+    }
+    
+    public Scene createScene() {
+        
+        root = new Group();
+        createInitialSprites();
+        
+        scene = new Scene(root, SpaceShooter.gameWidth, SpaceShooter.gameHeight, Color.CORNFLOWERBLUE);
+        scene.setOnKeyPressed(e -> handleKeyInput(e));
+        scene.setOnKeyReleased(e -> handleKeyRelease(e));
+        return scene;
+        
+    }
+    
+    public void initAnimation() {
+        
+        KeyFrame frame = new KeyFrame(Duration.millis(1000 / SpaceShooter.NUM_FRAMES_PER_SECOND), e -> updateSprites());
+        
+        if (timeline == null) {
+            
+            timeline = new Timeline();
+            
+        }        
+        
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.getKeyFrames().add(frame);
+        timeline.play();
+        
+    }
+
+    public abstract void createInitialSprites();
+    
+    public void createPlayerSprite() {
+                
+        playerSprite = new Player(SpaceShooter.gameWidth/2 , SpaceShooter.gameHeight / 2, this);
+    
+    }
+
+    // Very important method.
+    private void updateSprites() {
+        
+        playerSprite.updateLocation();
+        handleFiring();             // Handle Player Firing
+        updateEnemySprites();       // also handles enemy fire
+        updateBulletMovements();    // Bullet Movement
+        handleCollision();          // Register Collisions With ships
+        handleCollisionBullets();   // Register Collisions Between Sprites & Bullets
+        updateAllSpritesToCheckForDeath();
+        checkForWin();              // Check for win
+        
+    }
+
+    private void endOfLevelSuccess() {
+        
+        timeline.pause();
+        
+        // TODO: Display level success.
+        showEndOfLevelTextSuccess();
+        
+        Timeline fiveSecondDelay = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                
+                // Tell SpaceShooter to put up the next world.
+                signalEndOfLevel();
+        
+            }
+            
+        }));
+        
+        fiveSecondDelay.setCycleCount(1);
+        fiveSecondDelay.play();
+        
+    }
+    
+    public void endOfLevelFailure() {
+        
+        timeline.pause();
+        
+        showEndOfLevelFailure();
+        
+        Timeline fiveSecondDelay = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                
+                SpaceShooter.sharedInstance.displayStartMenu();
+        
+            }
+            
+        }));
+        
+        fiveSecondDelay.setCycleCount(1);
+        fiveSecondDelay.play();       
+    }
+    
+    public void showEndOfLevelTextSuccess() {
+        
+        createLabelAtCenterForTextForSuccess("SUCCESS", true);
+        
+    }
+    
+    private void showEndOfLevelFailure() {
+                
+       createLabelAtCenterForTextForSuccess("FAILURE", false);
+        
+    }
+    
+    private void createLabelAtCenterForTextForSuccess(String text, boolean success) {
+        
+        BorderPane b = new BorderPane();
+        b.setMinWidth(SpaceShooter.gameWidth);
+        b.setMinHeight(SpaceShooter.gameHeight);
+        
+        Label l = new Label(text);
+        l.setFont(new Font("Arial", 60));
+        
+        if (!success) {
+            
+            l.setTextFill(Color.RED);
+            
+        }
+        
+        else {
+            
+            l.setTextFill(Color.GREEN);
+            
+        }
+        
+        b.setCenter(l);
+        root.getChildren().add(b);
+        
+    }
+    
+    public abstract void signalEndOfLevel();
+    
+    public void handleKeyInput(KeyEvent e) {
+        
+        modifyDirControllerState(e, true);
+        
+    }
+
+    public void handleKeyRelease(KeyEvent e) {
+
+        modifyDirControllerState(e, false);
+        
+    }
+    
+    private void modifyDirControllerState(KeyEvent key, boolean newState) {
+                
+        KeyCode keyCode = key.getCode();
+                
+        if (keyCode == KeyCode.RIGHT) {
+            
+            Controls.rightPressed = newState;
+            
+        }
+        
+        else if (keyCode == KeyCode.LEFT) {
+            
+            Controls.leftPressed = newState;
+            
+        }
+        
+        else if (keyCode == KeyCode.UP) {
+            
+            Controls.upPressed = newState;
+            
+        }
+        
+        else if (keyCode == KeyCode.DOWN) {
+            
+            Controls.downPressed = newState;
+            
+        }
+        
+        else if (keyCode == KeyCode.SPACE) {
+            
+            Controls.spacePressed = newState;
+            
+        }
+        
+        else if (newState && keyCode == KeyCode.Y) {
+            
+            this.endOfLevelSuccess();
+            
+        }
+        
+        else if (newState && keyCode == KeyCode.I) {
+            
+            playerSprite.getHealthBar().infiniteHealth();
+            
+        }
+        
+        
+    }
+
+    private void checkForWin() {
+        
+        // Temporary end to game
+        if (sprites.size() == 1) {
+            
+            endOfLevelSuccess();
+            
+            // Player is left all alone. Stop animation. Level defeated.
+            
+        }
+        
+    }
+
+    private void handleCollision() {
+
+        for (Sprite s : sprites) {
+            
+            if (!s.equals(playerSprite)) {
+                
+                if (playerSprite.getBoundsInParent().intersects(s.getBoundsInParent())){
+                    
+                    handleCollisionWithEnemy((Enemy)s);
+                    
+                }
+                
+            }
+            
+        }
+    
+    }
+
+    private void updateEnemySprites() {
+
+        Enemy enemy;
+        
+        for (Sprite s : sprites) {
+            
+            if (s instanceof Enemy) {
+                
+                enemy = (Enemy)s;
+                
+                // Movement
+                enemy.updateEnemyXY();
+                
+                // Firing
+                if (enemy.isFiring()) {
+                    
+                    handleEnemyFiring(enemy);
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    // Player firing, NOT enemy firing.
+    private void handleFiring() {
+
+        // Check if space bar pressed, create new bullets for Player
+        if (Controls.spacePressed) {
+            
+            new Bullet(playerSprite.getBulletOffsetX(), playerSprite.getBulletOffsetY(), this, true);
+            
+        }
+        
+    }
+
+    private void handleEnemyFiring(Enemy enemy) {
+
+        new Bullet(enemy.getBulletOffsetX(), enemy.getBulletOffsetY(), this, false);
+    
+    }
+
+    private void updateBulletMovements() {
+
+        Bullet b;
+
+        if (bullets == null) {
+            
+            bullets = new ArrayList<Bullet>();
+            return;
+            
+        }
+        
+        for (Sprite s : bullets) {
+
+            if (s instanceof Bullet) {
+
+                b = (Bullet)s;
+                b.updateXY();
+
+            }
+
+        }
+        
+        removeOutOfBoundaryBullets();
+
+    }
+
+    private void removeOutOfBoundaryBullets() {
+
+        if (bulletsToRemove == null) {
+            
+            return;
+            
+        }
+        
+        for (Bullet b : bulletsToRemove) {
+            
+            bullets.remove(b);
+            root.getChildren().remove(b);
+            
+        }
+        
+        bulletsToRemove.clear();
+        
+    }
+    
+    public void addToOutOfBoundaryBulletsArray(Bullet b) {
+        
+        if (bulletsToRemove == null) {
+            
+            bulletsToRemove = new ArrayList<Bullet>();
+            
+        }
+        
+        bulletsToRemove.add(b);
+        
+    }
+
+    private void handleCollisionBullets() {
+
+        for (Sprite s : sprites) {
+            
+            for (Bullet b : bullets) {
+                
+                if (s.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                    
+                    b.addSelfToRemoveFromWorldArray();
+                    
+                    s.getHealthBar().decrementHealth(SpaceShooter.BULLET_DAMAGE);
+                                                            
+                }
+                
+            }
+            
+        }
+    
+    }
+
+    private void handleCollisionWithEnemy(Enemy s) {
+        
+        playerSprite.getHealthBar().instantDeath();
+        s.getHealthBar().instantDeath();
+        
+    }
+
+    private void updateAllSpritesToCheckForDeath() {
+        
+        for (Sprite s : sprites) {
+            
+            s.checkForDeathAndReactAppropriately();
+            
+        }
+    
+    }
+
+    public void addSpriteToRemove(Sprite s) {
+
+        if (spritesToRemove == null) {
+            
+            spritesToRemove = new ArrayList<Sprite>();
+            
+        }
+        
+        spritesToRemove.add(s);
+    
+    }
+    
+    public void removeSpritesToRemove() {
+     
+        if (spritesToRemove == null) {
+            
+            return;
+            
+        }
+        
+        for (Sprite s : spritesToRemove) {
+            
+            sprites.remove(s);
+            root.getChildren().remove(s);
+            
+        }
+        
+        spritesToRemove.clear();
+        
+    }
+
+}
+
+
+
+
