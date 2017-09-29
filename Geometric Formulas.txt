@@ -1,0 +1,162 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   main.cpp
+ * Author: micheal
+ *
+ * Created on September 21, 2017, 8:54 AM
+ */
+#include <stdio.h>
+#include <math.h>
+/*
+ * Methods must be above the main method
+ */
+
+void Square(float s, bool Area) {
+    float ans;
+    //if area is true
+    if(Area) {
+        ans = s * s;
+    } else {
+        ans = 4 * s;
+    }
+    printf("%f", ans);
+}
+
+void Rectangle(float l, float w, bool Area ) {
+    float ans;
+    if(Area) {
+        ans = l * w;
+    } else {
+        ans = 2 * l + 2 * w;
+    }
+    printf("%f", ans);
+}
+
+void Parallelogram(float l, float h, bool Area ) {
+    float ans;
+    if(Area) {
+        ans = l * h;
+    } else {
+        ans = 2 * l + 2 * h;
+    }
+    printf("%f", ans);
+}
+
+void Trapezoid(float h, float b1, float b2, float s1, float s2, bool Area) {
+    float ans;
+    if(Area) {
+        ans = .5 * h * (b1 + b2);
+    } else {
+        ans = s1 + s2 + b1 + b2;
+    }
+    printf("%f", ans);
+}
+
+void Triangle(float b, float h, float s1, float s2, bool Area ) {
+    float ans;
+    if(Area) {
+        ans = .5 * b * h;
+    } else {
+        ans = s1 + s2 + b;
+    }
+    printf("%f", ans);
+}
+
+void Circle(float r, bool Area ) {
+    float ans;
+    if(Area) {
+        ans = 3.141592 * r * r;
+    } else {
+        ans = 3.141592 * 2 * r;
+    }
+    printf("%f", ans);
+}
+
+void RectangleSolid(float l, float w, float h, int choice) {
+    float ans;
+    if(choice == 1) {
+        ans = l * w * h;
+    } else if(choice == 2) {
+        ans = (2 * l * w) + (2 * l * h) + (2 * w * h);
+    } else {
+        printf("Please make sure your input is valid...");
+    }
+    printf("%f", ans);
+}
+
+void Cube(float s, int choice) {
+    float ans;
+    if(choice == 1) {
+        ans = s*s*s;
+    } else if(choice == 2) {
+        ans = 6*s*s;
+    } else {
+        printf("Please make sure your input is valid...");
+    }
+    printf("%f", ans);
+}
+
+void RightCircularCylinder(float r, float h, int choice) {
+    float ans;
+    if(choice == 1) {
+        ans = 3.14 * r * r * h;
+    } else if(choice == 2) {
+        ans = 2 * 3.14 * r * h * r * r;
+    } else {
+        printf("Please make sure your input is valid...");
+    }
+    printf("%f", ans);
+}
+
+void Sphere(float r, int choice) {
+    float ans;
+    if(choice == 1) {
+        ans = (4/3) * 3.14 * r * r * r;
+    } else if(choice == 2) {
+        ans = 4 * 3.14* r * r;
+    } else {
+        printf("Please make sure your input is valid...");
+    }
+    printf("%f", ans);
+}
+
+void RightCircularCone(float r, float h, int choice) {
+    float ans;
+    //double sqrt(double x)
+    if(choice == 1) {
+        ans = (1/3) * 3.14 * r * r * h;
+    } else if(choice == 2) {
+        ans = 3.14 * r * (r * sqrt(r * r + h * h));
+    } else {
+        printf("Please make sure your input is valid...");
+    }
+    printf("%f", ans);
+}
+
+void Square_Rect_Pyramid(float l, float w, float h, int choice) {
+    float ans;
+    if(choice == 1) {
+        ans = (1/3) * l * w * h;
+    } else {
+        printf("Please make sure your input is valid...");
+    }
+    printf("%f", ans);
+}
+
+void FrustumOfRightCircularCone(float r, float h, float R, float s, int choice) {
+    
+}
+
+main() {
+    printf("Hello, world!\n");
+    Rectangle(3, 5, false);
+    return 0;
+} 
+
+
+
